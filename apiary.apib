@@ -1,0 +1,172 @@
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
+
+# GartnerConsultingDay-2017
+
+Gartner Consulting Day 2017 is an API to manage Beta Customers.  This API fronts both a microservice and a status update REST service from APEX
+
+## Customer Collection [/betaCustomers]
+
+### List All betaCustomers [GET]
+Issue a GET request to get a complete list of betaCustomers.  You can include any of the fields as a filter
++ Request
+
+    + Headers
+    
+            Tenant-id: 31
+
+
++ Response 200 (application/json)
+
+        {
+              "items": [
+                {
+                  "customer": "ACME Corp",
+                  "status": "Proposed",
+                  "product": "Widget",
+                 "id": "589a3774ebee507f7268bcff",
+                 "updated": "Tue, 07 Feb 2017 22:05:38 GMT",
+                 "summary": "Appled for Widget Beta",
+                  "links": {
+                    "self": {
+                      "href": "tickets/589a3774ebee507f7268bcff",
+                      "title": "Proposed"
+                    }
+                  },
+                  "created": "Thu, 01 Jan 1970 00:00:00 GMT",
+                  "ticketID": "45001",
+                  "etag": "bd584d9a460eabdc979e428e1e0220923b0c5793",
+                  "subject": "Widget Beta applciation"
+                },
+                {
+                  "customer": "ACME Corp",
+                  "status": "Rejected",
+                  "product": "Widget",
+                  "ticketID": "45002",
+                  "updated": "Tue, 07 Feb 2017 21:44:21 GMT",
+                  "summary": "Inappropriate commercials
+                  "links": {
+                    "self": {
+                      "href": "tickets/589a3fb534605c000176ef5f",
+                      "title": "rejected"
+                    }
+                  },
+                  "created": "Tue, 07 Feb 2017 21:44:21 GMT",
+                  "id": "589a3fb534605c000176ef5f",
+                  "etag": "cfe52a36fa7a1c738acc994f6e49a8f3f86ce4bf",
+                 "subject": "Not right for Widget"
+                },
+                {
+                  "customer": "Gartner",
+                  "status": "Accepted",
+                  "product": "Widget",
+                  "ticketID": "45002",
+                 "updated": "Tue, 07 Feb 2017 21:44:37 GMT",
+                  "summary": "Accepted onto Widget Beta",
+                 "links": {
+                   "self": {
+                     "href": "tickets/589a3fc534605c000176ef60",
+                     "title": "Accepted"
+                   }
+                 },
+                  "created": "Tue, 07 Feb 2017 21:44:37 GMT",
+                  "id": "589a3fc534605c000176ef60",
+                  "etag": "dbcf344b1bcaf9fc6781846ed944d147a875394c",
+                  "subject": "Ideal candidate"
+                }
+            }
+
+### Create a New Beta Request [POST]
+
+To Create a betaCustomer, post with the complete payload.
+
++ Request (application/json)
+
+        [
+            {
+                "ticketID": "45434",
+                "subject": "Proposed Widget Beta",
+                "summary": "Customer really wants to try out a widget",
+                "customer": "Tech Experts",
+                "customerID": "46995",
+                "partner": "Gartner",
+                "partnerID":"7309",
+                "product": "Widget",
+                "status": "proposed",
+                "tracking":""
+            }
+        ]
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /tickets/58a0d394e0577b0001bcc981
+
+    + Body
+
+            {
+            "updated": "Sun, 12 Feb 2017 21:28:52 GMT",
+            "links": {
+                "self": {
+                  "href": "tickets/58a0d394e0577b0001bcc981",
+                  "title": "Proposed"
+                }
+              },
+              "created": "Sun, 12 Feb 2017 21:28:52 GMT",
+              "status": "OK",
+              "id": "58a0d394e0577b0001bcc981",
+              "etag": "7a898301b641f1f28dbcf69a6c0dfadf292d6861"
+            }
+
+### Update a Beta Customer [PATCH /betaCustomer/{id}]
+
++ parameters
+    + id: 58a0d394e0577b0001bcc981 (string, required)
+    
++ request (application/json)
+
+    + Headers
+    
+            If-Match: 7a898301b641f1f28dbcf69a6c0dfadf292d6861
+
+    + Body
+    
+            { "status": "Accepted" }
+            
++ response 200 (application/json)
+
+        + Headers
+            ETag: 638bed8fb23acec55e36beafc1d0f2b2d86539ce
+
+    + Body
+    
+            {
+            "updated": "Sun, 12 Feb 2017 22:48:24 GMT",
+             "links": {
+               "self": {
+                 "href": "betaCustomer/589a3774ebee507f7268bcff",
+                 "title": "Proposed"
+               }
+             },
+             "created": "Thu, 01 Jan 1970 00:00:00 GMT",
+             "status": "OK",
+             "id": "589a3774ebee507f7268bcff",
+             "etag": "638bed8fb23acec55e36beafc1d0f2b2d86539ce"
+            }
+
+## betaCustomer Collection [/lifecycle]
+Lifecycle is an API for the betaCustomer Service exposed by APEX.  In the future, we will define PATCH /betaCustomer to call the APEX REST service in the process of updating the status in the micro-service, but until that time, we will have a separate API for betaCustomers.
+
+### Update a lifecycle [PATCH /lifeCycle/{id}]
+
++ parameters
+    + id: 44501 (string, required)
+    
++ request (application/json)
+
+    + Body
+    
+            { "status": "Accepted" }
+            
++ response 200 (application/json)
